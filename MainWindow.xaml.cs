@@ -27,9 +27,12 @@ public partial class MainWindow : Window
             var correlationIds = await EnqueueAllTeamsAndGetCorrelationIds();
             var allTeamStats = await FetchAllProcessedData(correlationIds);
 
-            var sortedTeamStats = allTeamStats.OrderBy(teamStat => teamStat.gameDate).ToList();
+            var uniqueTeamStats = allTeamStats
+                .OrderBy(teamStat => teamStat.gameDate)
+                .DistinctBy(teamStat => new { teamStat.teamName, teamStat.teamNumber, teamStat.gameDate })
+                .ToList();
 
-            lvTeamData.ItemsSource = sortedTeamStats;
+            lvTeamData.ItemsSource = uniqueTeamStats;
         }
         catch (Exception ex)
         {
