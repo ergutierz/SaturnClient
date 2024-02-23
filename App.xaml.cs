@@ -10,4 +10,3 @@ namespace SaturnClient;
 public partial class App : Application
 {
 }
-

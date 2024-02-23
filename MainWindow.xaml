@@ -5,8 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SaturnClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Team Data Viewer" Height="450" Width="800">
 
+    <Grid>
+        <ListView x:Name="lvTeamData" Margin="10">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Team Name" DisplayMemberBinding="{Binding teamName}" Width="120"/>
+                    <GridViewColumn Header="Team Number" DisplayMemberBinding="{Binding teamNumber}" Width="100"/>
+                    <GridViewColumn Header="Score" DisplayMemberBinding="{Binding teamScore}" Width="80"/>
+                    <GridViewColumn Header="Game Date" DisplayMemberBinding="{Binding gameDate}" Width="150"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <ProgressBar x:Name="progressBar" Grid.RowSpan="2" Width="100" Height="100"
+                     IsIndeterminate="True" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center"/>
     </Grid>
 </Window>
