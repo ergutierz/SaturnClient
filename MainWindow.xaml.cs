@@ -6,11 +6,17 @@ using NLog;
 
 namespace SaturnClient;
 
+/// <summary>
+/// Main Window class that handles the UI and data fetching operations.
+/// </summary>
 public partial class MainWindow : Window
 {
     private readonly HttpClient _httpClient = new();
     private readonly Logger logger = LogManager.GetCurrentClassLogger();
     
+    /// <summary>
+    /// Initializes the MainWindow component.
+    /// </summary>
     public MainWindow()
     {
         InitializeComponent();
@@ -18,6 +24,9 @@ public partial class MainWindow : Window
         FetchAndDisplayTeamData();
     }
     
+    /// <summary>
+    /// Fetches and displays team data asynchronously.
+    /// </summary>
     private async void FetchAndDisplayTeamData()
     {
         progressBar.Visibility = Visibility.Visible;
@@ -45,6 +54,11 @@ public partial class MainWindow : Window
         }
     }
 
+    /// <summary>
+    /// Fetches all processed data for the given correlation IDs.
+    /// </summary>
+    /// <param name="correlationIds">The dictionary of team numbers and their corresponding correlation IDs.</param>
+    /// <returns>A list of TeamStat objects.</returns>
     private async Task<List<TeamStat>> FetchAllProcessedData(Dictionary<int, string> correlationIds)
     {
         var allTeamStats = new List<TeamStat>();
@@ -52,7 +66,6 @@ public partial class MainWindow : Window
         foreach (var kvp in correlationIds)
         {
             var correlationId = kvp.Value;
-        
             var fetchedData = await FetchProcessedData(correlationId);
             if (fetchedData != null && fetchedData.Count > 0)
             {
@@ -63,6 +76,10 @@ public partial class MainWindow : Window
         return allTeamStats;
     }
 
+    /// <summary>
+    /// Enqueues all teams and gets the correlation IDs.
+    /// </summary>
+    /// <returns>A dictionary mapping team numbers to correlation IDs.</returns>
     private async Task<Dictionary<int, string>> EnqueueAllTeamsAndGetCorrelationIds()
     {
         var correlationIds = new Dictionary<int, string>();
@@ -78,8 +95,12 @@ public partial class MainWindow : Window
 
         return correlationIds;
     }
- 
     
+    /// <summary>
+    /// Enqueues a team for processing and retrieves the correlation ID.
+    /// </summary>
+    /// <param name="teamNumber">The team number to enqueue.</param>
+    /// <returns>The correlation ID.</returns>
     private async Task<string> EnqueueTeam(int teamNumber)
     {
         var teamRequest = new TeamRequest { TeamNumber = teamNumber };
@@ -95,6 +116,11 @@ public partial class MainWindow : Window
         return apiResponse?.correlationId ?? string.Empty;
     }
 
+    /// <summary>
+    /// Fetches processed data for a given correlation ID.
+    /// </summary>
+    /// <param name="correlationId">The correlation ID to fetch data for.</param>
+    /// <returns>A list of TeamStat objects.</returns>
     private async Task<List<TeamStat>> FetchProcessedData(string correlationId)
     {
         return await RetryPolicy.RetryOnConditionAsync<List<TeamStat>>(
@@ -113,15 +139,19 @@ public partial class MainWindow : Window
         );
     }
 
-    
+    /// <summary>
+    /// Represents a request to enqueue a team.
+    /// </summary>
     public class TeamRequest
     {
         public int TeamNumber { get; set; }
     }
 
+    /// <summary>
+    /// Represents the API response.
+    /// </summary>
     public class ApiResponse
     {
         public string correlationId { get; set; }
     }
-
 }
